@@ -160,44 +160,44 @@ ReadB:
   AND #%00000001  ; only look at bit 0
   BEQ ReadBDone   ; branch to ReadADone if button is NOT pressed (0)
 
-  jsr SnareDrum
+  JSR SnareDrum
 
   SnareDrum:
-  ; Enable the noise channel
-    lda #%00001000       ; Bit 3 set = enable noise channel
-    sta $4015
+; Enable the noise channel
+  LDA #%00001000       ; Bit 3 set = enable noise channel
+  STA $4015
 
-    ; Configure Noise Channel Envelope
-    lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
+; Configure Noise Channel Envelope
+  LDA #%00110100       ; Volume 4, Envelope disabled, decay rate fast
                          ; Bit 7 = 0 (disable envelope)
                          ; Bit 6 = 1 (constant volume)
                          ; Bit 5-0 = 4 (volume)
-    sta $400C            ; Write to Noise Envelope/Volume register
+  STA $400C            ; Write to Noise Envelope/Volume register
 
-    ; Configure Noise Frequency
-    lda #%00100011       ; Frequency index = $23 (higher frequency for sharpness)
+; Configure Noise Frequency
+  LDA #%00100011       ; Frequency index = $23 (higher frequency for sharpness)
                          ; Bit 7 = 0 (non-looping random noise)
                          ; Bits 4-0 = $23 (frequency index)
-    sta $400E            ; Write to Noise Period register
+  STA $400E            ; Write to Noise Period register
 
-    ; Restart the length counter
-    lda #%00001000       ; Load length counter (short duration)
-    sta $400F            ; Writing to $400F also resets envelope and length counter
+; Restart the length counter
+  LDA #%00001000       ; Load length counter (short duration)
+  STA $400F            ; Writing to $400F also resets envelope and length counter
 
-    DelayLoopX2:
-    ldx #$bb            ; Outer loop for a longer delay   
+DelayLoopX2:
+  LDX #$bb            ; Outer loop for a longer delay   
 DelayLoopOuterX2:
-    ldy #$bb            ; Inner loop
+  LDY #$bb            ; Inner loop
 DelayLoopInnerX2:
-    dey
-    bne DelayLoopInnerX1  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterX1  ; Repeat outer loop until X = 0
+  DEY
+  BNE DelayLoopInnerX1  ; Repeat inner loop until Y = 0
+  DEX
+  BNE DelayLoopOuterX1  ; Repeat outer loop until X = 0
 
-    lda #$00
-    sta $4015
+  LDA #$00
+  STA $4015
 
-    rti
+  RTI
 
 ReadBDone:        ; handling this button is done
 
@@ -207,45 +207,45 @@ ReadSelect:
   BEQ ReadSelectDone   ; If Select is NOT pressed, skip
 
 DelayLoopXcolor1:
-    ldx #$aa            ; Outer loop for a longer delay   
+  LDX #$aa            ; Outer loop for a longer delay   
 DelayLoopOuterXcolor1:
-    ldy #$aa            ; Inner loop
+  LDY #$aa            ; Inner loop
 DelayLoopInnerXcolor1:
-    dey
-    bne DelayLoopInnerXcolor1  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterXcolor1  ; Repeat outer loop until X = 0
+  DEY
+  BNE DelayLoopInnerXcolor1  ; Repeat inner loop until Y = 0
+  DEX
+  BNE DelayLoopOuterXcolor1  ; Repeat outer loop until X = 0
 
 
-  ; Increment color_index to cycle through colors
-  lda color_index        ; Load current color index
-  clc                    ; Clear carry (safe addition)
-  adc #$01               ; Add 1 to move to the next color
-  cmp #$05               ; Check if it exceeds the number of colors (5)
-  bcc NoReset            ; If below 5, continue
-  lda #$00               ; Reset to the first color
+; Increment color_index to cycle through colors
+  LDA color_index        ; Load current color index
+  CLC                    ; Clear carry (safe addition)
+  ADC #$01               ; Add 1 to move to the next color
+  CMP #$05               ; Check if it exceeds the number of colors (5)
+  BCC NoReset            ; If below 5, continue
+  LDA #$00               ; Reset to the first color
 NoReset:
-  sta color_index        ; Store updated color index
+  STA color_index        ; Store updated color index
 
-  ; Load the color based on the current index
-  lda $2002              ; Reset PPU address latch
-  lda #$3F
-  sta $2006              ; Set VRAM address to palette
-  lda #$00
-  sta $2006
+; Load the color based on the current index
+  LDA $2002              ; Reset PPU address latch
+  LDA #$3F
+  STA $2006              ; Set VRAM address to palette
+  LDA #$00
+  STA $2006
 
-  lda color_index        ; Load current color index
-  asl                    ; Multiply index by 2 (for table lookup)
-  tay                    ; Store in Y register for lookup
-  lda color_table, y     ; Load the color value from the table
-  sta $2007              ; Write it to the background color
+  LDA color_index        ; Load current color index
+  ASL                    ; Multiply index by 2 (for table lookup)
+  TAY                    ; Store in Y register for lookup
+  LDA color_table, y     ; Load the color value from the table
+  STA $2007              ; Write it to the background color
 
-  DelayLoopXcolor:
-    ldx #$ff            ; Outer loop for a longer delay   
+DelayLoopXcolor:
+  LDX #$FF            ; Outer loop for a longer delay   
 DelayLoopOuterXcolor:
-    ldy #$ff            ; Inner loop
+  LDY #$FF            ; Inner loop
 DelayLoopInnerXcolor:
-    dey
+  DEY
     bne DelayLoopInnerXcolor  ; Repeat inner loop until Y = 0
     dex
     bne DelayLoopOuterXcolor  ; Repeat outer loop until X = 0
@@ -302,41 +302,41 @@ ReadUp:
   jsr HiHat
 
   HiHat:
-  ; Enable the noise channel
-    lda #%00001000       ; Bit 3 set = enable noise channel
-    sta $4015
+; Enable the noise channel
+  lda #%00001000       ; Bit 3 set = enable noise channel
+  sta $4015
 
-    ; Configure Noise Channel Envelope
-    lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
+; Configure Noise Channel Envelope
+  lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
                          ; Bit 7 = 0 (disable envelope)
                          ; Bit 6 = 1 (constant volume)
                          ; Bit 5-0 = 4 (volume)
-    sta $400C            ; Write to Noise Envelope/Volume register
+  sta $400C            ; Write to Noise Envelope/Volume register
 
-    ; Configure Noise Frequency
-    lda #%00100000       ; Frequency index = $23 (higher frequency for sharpness)
+; Configure Noise Frequency
+  lda #%00100000       ; Frequency index = $23 (higher frequency for sharpness)
                          ; Bit 7 = 0 (non-looping random noise)
                          ; Bits 4-0 = $23 (frequency index)
-    sta $400E            ; Write to Noise Period register
+  sta $400E            ; Write to Noise Period register
 
-    ; Restart the length counter
-    lda #%00001000       ; Load length counter (short duration)
-    sta $400F            ; Writing to $400F also resets envelope and length counter
+; Restart the length counter
+  lda #%00001000       ; Load length counter (short duration)
+  sta $400F            ; Writing to $400F also resets envelope and length counter
 
-    DelayLoopX3:
-    ldx #$bb            ; Outer loop for a longer delay   
+DelayLoopX3:
+  ldx #$bb            ; Outer loop for a longer delay   
 DelayLoopOuterX3:
-    ldy #$bb            ; Inner loop
+  ldy #$bb            ; Inner loop
 DelayLoopInnerX3:
-    dey
-    bne DelayLoopInnerX3  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterX3  ; Repeat outer loop until X = 0
+  dey
+  bne DelayLoopInnerX3  ; Repeat inner loop until Y = 0
+  dex
+  bne DelayLoopOuterX3  ; Repeat outer loop until X = 0
 
-    lda #$00
-    sta $4015
+  lda #$00
+  sta $4015
 
-    rti
+  rti
 
 ReadUpDone:
 
@@ -348,40 +348,40 @@ ReadDown:
   jsr Tom
 
   Tom:
-  ; Enable the noise channel
-    lda #%00001000       ; Bit 3 set = enable noise channel
-    sta $4015
+; Enable the noise channel
+  lda #%00001000       ; Bit 3 set = enable noise channel
+  sta $4015
 
-    ; Configure Noise Channel Envelope
-    lda #%00110110       ; Volume 6, Envelope disabled, decay rate fast
+; Configure Noise Channel Envelope
+  lda #%00110110       ; Volume 6, Envelope disabled, decay rate fast
                          ; Bit 7 = 0 (disable envelope)
                          ; Bit 6 = 1 (constant volume)
                          ; Bit 5-0 = 6 (volume)
-    sta $400C            ; Write to Noise Envelope/Volume register
+  sta $400C            ; Write to Noise Envelope/Volume register
 
-    ; Configure Noise Frequency
-    lda #%00011110       ; Frequency index = $1E (low frequency, deep sound)
+; Configure Noise Frequency
+  lda #%00011110       ; Frequency index = $1E (low frequency, deep sound)
                          ; Bit 7 = 0 (non-looping random noise)
                          ; Bits 4-0 = $1E (frequency index)
-    sta $400E            ; Write to Noise Period register
+  sta $400E            ; Write to Noise Period register
 
-    ; Restart the length counter
-    lda #%00001000       ; Load length counter (short duration)
-    sta $400F            ; Writing to $400F also resets envelope and length counter
+; Restart the length counter
+  lda #%00001000       ; Load length counter (short duration)
+  sta $400F            ; Writing to $400F also resets envelope and length counter
 
 
 DelayLoopX4:
-    ldx #$5E            ; Outer loop for a longer delay   
+  ldx #$5E            ; Outer loop for a longer delay   
 DelayLoopOuterX4:
-    ldy #$5F            ; Inner loop
+  ldy #$5F            ; Inner loop
 DelayLoopInnerX4:
-    dey
-    bne DelayLoopInnerX4  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterX4  ; Repeat outer loop until X = 0
+  dey
+  bne DelayLoopInnerX4  ; Repeat inner loop until Y = 0
+  dex
+  bne DelayLoopOuterX4  ; Repeat outer loop until X = 0
 
-    lda #$00
-    sta $4015
+  lda #$00
+  sta $4015
  
 ReadDownDone:
 
@@ -393,41 +393,41 @@ ReadLeft:
   jsr Synth
 
   Synth:
-  ; Enable the noise channel
-    lda #%00001000       ; Bit 3 set = enable noise channel
-    sta $4015
+; Enable the noise channel
+  lda #%00001000       ; Bit 3 set = enable noise channel
+  sta $4015
 
-    ; Configure Noise Channel Envelope
-    lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
+; Configure Noise Channel Envelope
+  lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
                          ; Bit 7 = 0 (disable envelope)
                          ; Bit 6 = 1 (constant volume)
                          ; Bit 5-0 = 4 (volume)
-    sta $400C            ; Write to Noise Envelope/Volume register
+  sta $400C            ; Write to Noise Envelope/Volume register
 
-    ; Configure Noise Frequency
-    lda #%00100000       ; Frequency index = $23 (higher frequency for sharpness)
+; Configure Noise Frequency
+  lda #%00100000       ; Frequency index = $23 (higher frequency for sharpness)
                          ; Bit 7 = 0 (non-looping random noise)
                          ; Bits 4-0 = $23 (frequency index)
-    sta $400E            ; Write to Noise Period register
+  sta $400E            ; Write to Noise Period register
 
-    ; Restart the length counter
-    lda #%00001000       ; Load length counter (short duration)
-    sta $400F            ; Writing to $400F also resets envelope and length counter
+; Restart the length counter
+  lda #%00001000       ; Load length counter (short duration)
+  sta $400F            ; Writing to $400F also resets envelope and length counter
 
-    DelayLoopX5:
-    ldx #$10            ; Outer loop for a longer delay   
+DelayLoopX5:
+  ldx #$10            ; Outer loop for a longer delay   
 DelayLoopOuterX5:
-    ldy #$10            ; Inner loop
+  ldy #$10            ; Inner loop
 DelayLoopInnerX5:
-    dey
-    bne DelayLoopInnerX5  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterX5  ; Repeat outer loop until X = 0
+  dey
+  bne DelayLoopInnerX5  ; Repeat inner loop until Y = 0
+  dex
+  bne DelayLoopOuterX5  ; Repeat outer loop until X = 0
 
-    lda #$00
-    sta $4015
+  lda #$00
+  sta $4015
 
-    rti
+  rti
   
 
 ReadLeftDone:
