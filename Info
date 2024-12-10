@@ -1,0 +1,71 @@
+Jam! is an interactive music instrument for the NES. Player 1 controls percussion and Player 2 controls melody.
+
+
+Player 1: Drums and noise
+
+A-Button: Bass drum
+B-Button: Snare drum
+Up: Hi-hat
+Left: Noise
+Right: Low note
+Down: Crash
+Start: High note
+Select: Change background color 
+
+Player 2: Triangle Synth Wave
+
+A-Button: C#
+B-Button: E
+Select: G#
+Start: B
+Up: C#
+Down: D
+Left: E
+Right F#
+
+
+Simple 8-beat
+A, Up, B, Up
+or
+A, Left, B, Left
+
+Simple loop melody:
+Right, Right, Up, Up
+
+Tricky loop melody:
+Down, Left, Up, Left, Right, Left, Up, Left
+Down, Left, Up, Left, Start, Left, Up, Left
+
+8 Beat with a simple melody:
+A, Left, B, Left x4
+A, Start, B, Start x4
+
+Mixed noise:
+Hold Right or Start and hold auto fire A
+
+Telephone call:
+(Player 2) Right, Down, Right, Down, Right, Down, Right, Down
+Smoke on Water 
+(Player 2) Select, Start, Up, Select, Start Down, Up, Select, Start, Up, Start, Up
+(Hold down Auto fire A on controller 1 for a more distorted sound)
+
+
+Q&A
+
+How do I open the file?
+You need to download a NES emulator and open it from there. I recommend either Nestopia or Fceux.
+
+Does this actually run on a Nintendo console?
+I haven’t tried, but it should! The only problem would perhaps be the controls. Since I programmed the inputs on a keyboard using a custom layout, it might feel weird or awkward playing it on an actual controller. 
+
+How was this made?
+The rom was entirely programmed in assembly code for the 6502 architecture. I used VisualStudio to code and cc65 to compile the code. I did not code from scratch but found bits and pieces of code online and put it together with trial and error. 
+
+How long did it take?
+It took a very long time. It took me many sessions of endless coding to figure out how to even turn the screen to a different color. Once I figured out controller inputs and loops it got easier.   
+
+Are you going to improve or update the rom?
+Yes, I’ll make small adjustments here and there but nothing big. 
+
+Any future projects?
+Maybe a simple platformer or some mini game and that’s about it. I will be using Python for more serious projects.
