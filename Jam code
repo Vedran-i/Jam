@@ -70,7 +70,6 @@ LoadPalettesLoop:
   CPX #$20              ; Compare X to hex $10, decimal 16 - copying 16 bytes = 4 sprites
   BNE LoadPalettesLoop  ; Branch to LoadPalettesLoop if compare was Not Equal to zero
                         ; if compare was equal to 32, keep going down
-
 LoadSprites:
   LDX #$00              ; start at 0
 LoadSpritesLoop:
@@ -79,8 +78,7 @@ LoadSpritesLoop:
   INX                   ; X = X + 1
   CPX #$20              ; Compare X to hex $20, decimal 32
   BNE LoadSpritesLoop   ; Branch to LoadSpritesLoop if compare was Not Equal to zero
-                        ; if compare was equal to 32, keep going down
-              
+                        ; if compare was equal to 32, keep going down            
   LDA #%10000000   ; enable NMI, sprites from Pattern Table 1
   STA $2000
 
@@ -99,19 +97,17 @@ nmi:
 Jam1:
   LDX #$00 	; Set SPR-RAM address to 0
   STX $2003
-@loop:	lda Jam, x 	; Load the hello message into SPR-RAM
+@loop:	lda Jam, x 	; Load the JAM text into SPR-RAM
   STA $2004
   INX
   CPX #$1c
   BNE @loop
-
 
 LatchController:
   LDA #$01
   STA $4016
   LDA #$00
   STA $4016       ; tell both the controllers to latch buttons
-
 
 ReadA: 
   LDA $4016       ; player 1 - A
@@ -121,46 +117,44 @@ ReadA:
 
   BassDrum:
 ; Enable the noise channel
-    lda #%00001000       ; Bit 3 set = enable noise channel
-    sta $4015
+  LDA #%00001000       ; Bit 3 set = enable noise channel
+  STA $4015
 
-    ; Configure Noise Channel Envelope
-    lda #%00110100       ; Volume 4, Envelope disabled, decay rate fast
+; Configure Noise Channel Envelope
+  LDA #%00110100       ; Volume 4, Envelope disabled, decay rate fast
                          ; Bit 7 = 0 (disable envelope)
                          ; Bit 6 = 1 (constant volume)
                          ; Bit 5-0 = 4 (volume)
-    sta $400C            ; Write to Noise Envelope/Volume register
+  STA $400C            ; Write to Noise Envelope/Volume register
 
-    ; Configure Noise Frequency
-    lda #%00111111       ; Frequency index = $23 (higher frequency for sharpness)
+; Configure Noise Frequency
+  LDA #%00111111       ; Frequency index = $23 (higher frequency for sharpness)
                          ; Bit 7 = 0 (non-looping random noise)
                          ; Bits 4-0 = $23 (frequency index)
-    sta $400E            ; Write to Noise Period register
+  STA $400E            ; Write to Noise Period register
 
-    ; Restart the length counter
-    lda #%00001000       ; Load length counter (short duration)
-    sta $400F            ; Writing to $400F also resets envelope and length counter
-
+; Restart the length counter
+  LDA #%00001000       ; Load length counter (short duration)
+  STA $400F            ; Writing to $400F also resets envelope and length counter
 
 DelayLoopX1:
-    ldx #$bb            ; Outer loop for a longer delay   
+  LDX #$bb            ; Outer loop for a longer delay   
 DelayLoopOuterX1:
-    ldy #$bb            ; Inner loop
+  LDY #$bb            ; Inner loop
 DelayLoopInnerX1:
-    dey
-    bne DelayLoopInnerX1  ; Repeat inner loop until Y = 0
-    dex
-    bne DelayLoopOuterX1  ; Repeat outer loop until X = 0
+  DEY
+  BNE DelayLoopInnerX1  ; Repeat inner loop until Y = 0
+  DEX
+  BNE DelayLoopOuterX1  ; Repeat outer loop until X = 0
 
-    lda #$00
-    sta $4015
+;Stops sound
+  LDA #$00
+  STA $4015
 
-    rti
-
+  RTI
 
 ReadADone:        ; handling this button is done
   
-
 ReadB: 
   LDA $4016       ; player 1 - A
   AND #%00000001  ; only look at bit 0
@@ -273,13 +267,13 @@ lda #%00000111  ;enable Sq1, Sq2 and Tri channels
     sta $4015
  
  
-    ;Triangle
-    lda #%10000001  ;Triangle channel on
-    sta $4008
-    lda #$DF        ;$042 is a G# in NTSC mode
-    sta $400A
-    lda #$00
-    sta $400B
+;Triangle
+lda #%10000001  ;Triangle channel on
+sta $4008
+lda #$DF        ;$042 is a G# in NTSC mode
+sta $400A
+lda #$00
+sta $400B
   
 DelayLoopX6:
   ldx #$bb            ; Outer loop for a longer delay   
